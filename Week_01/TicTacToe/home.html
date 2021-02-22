@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<body>
+  <div id="board"></div>
+
+  <style>
+    .cell {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: green;
+
+      border: solid 1px white;
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 50px;
+    }
+  </style>
+
+  <script>
+    let pattern = [
+      0, 2, 0,
+      0, 1, 0,
+      0, 0, 0
+    ]
+
+    let color = 1      //1为❌ 2为⭕️
+
+    function show(pattern) {
+      let board = document.getElementById("board")
+
+      board.innerHTML = ''
+
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          let cell = document.createElement("div")
+          cell.classList.add("cell")
+          let index = getIndex(i, j)
+          cell.innerText =
+            pattern[index] == 2 ? "⭕️" :
+              pattern[index] == 1 ? "❌" : ""
+          cell.addEventListener("click", () => userMove(index, color))
+          board.appendChild(cell)
+        }
+        board.appendChild(document.createElement("br"))
+      }
+    }
+
+    function getIndex(x, y) {
+      return x * 3 + y
+    }
+
+    function userMove(index) {
+      pattern[index] = color
+      if (check(pattern, color)) {
+        alert(color == 2 ? "⭕️  is winner!" : "❌  is winner!")
+      }
+      color = 3 - color
+      show(pattern)
+      console.log(willWin(pattern, color))
+    }
+
+    function check(pattern, color) {
+      // 横向
+      for (let i = 0; i < 3; i++) {
+        let win = true
+        for (let j = 0; j < 3; j++) {
+          let index = getIndex(i, j)
+          if (pattern[index] !== color) {
+            win = false
+          }
+        }
+        if (win) {
+          return win
+        }
+      }
+      // 纵向
+      for (let i = 0; i < 3; i++) {
+        let win = true
+        for (let j = 0; j < 3; j++) {
+          let index = getIndex(j, i)
+          if (pattern[index] !== color) {
+            win = false
+          }
+        }
+        if (win) {
+          return win
+        }
+      }
+      // 向右下角斜线
+      {
+        for (let i = 0; i < 3; i++) {
+          let index = i * 3 + i
+          if (pattern[index] !== color) {
+            return false
+          }
+        }
+        return true
+      }
+      // 向左下角斜线
+      {
+        for (let i = 0; i < 3; i++) {
+          let index = i * 3 + (3 - i)
+          if (pattern[index] !== color) {
+            return false
+          }
+        }
+        return true
+      }
+    }
+
+    function clone(pattern) {
+      return Object.create(pattern)
+    }
+
+    function willWin(pattern, color) {
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          let index = getIndex(i, j)
+          if (pattern[index]) {
+            // 已落子
+            continue
+          }
+          let tmp = clone(pattern)
+          tmp[index] = color
+          if (check(tmp, color)) {
+            return true
+          }
+        }
+      }
+      return false
+    }
+
+    show(pattern)
+  </script>
+</body>
