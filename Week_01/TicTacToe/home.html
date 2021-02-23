@@ -20,14 +20,15 @@
 
   <script>
     let pattern = [
-      0, 2, 0,
-      0, 1, 0,
+      0, 0, 0,
+      0, 0, 0,
       0, 0, 0
     ]
 
     let color = 1      //1为❌ 2为⭕️
 
-    function show(pattern) {
+    // 显示->添加事件->检测胜负->判断是否要赢->AI选择->人机交互
+    function show() {
       let board = document.getElementById("board")
 
       board.innerHTML = ''
@@ -52,13 +53,32 @@
     }
 
     function userMove(index) {
+      if (pattern[index] !== 0) {
+        return
+      }
       pattern[index] = color
       if (check(pattern, color)) {
+        show()
         alert(color == 2 ? "⭕️  is winner!" : "❌  is winner!")
+        return
       }
       color = 3 - color
-      show(pattern)
-      console.log(willWin(pattern, color))
+      show()
+      computerMove()
+    }
+
+    function computerMove() {
+      let choice = bestChoice(pattern, color)
+      if (choice.index) {
+        pattern[choice.index] = color
+      }
+      if (check(pattern, color)) {
+        show()
+        alert(color == 2 ? "⭕️  is winner!" : "❌  is winner!")
+        return
+      }
+      color = 3 - color
+      show()
     }
 
     function check(pattern, color) {
@@ -69,6 +89,7 @@
           let index = getIndex(i, j)
           if (pattern[index] !== color) {
             win = false
+            break
           }
         }
         if (win) {
@@ -82,6 +103,7 @@
           let index = getIndex(j, i)
           if (pattern[index] !== color) {
             win = false
+            break
           }
         }
         if (win) {
@@ -90,23 +112,27 @@
       }
       // 向右下角斜线
       {
+        let win = true
         for (let i = 0; i < 3; i++) {
           let index = i * 3 + i
           if (pattern[index] !== color) {
-            return false
+            win = false
           }
         }
-        return true
+        if (win) {
+          return win
+        }
       }
       // 向左下角斜线
       {
-        for (let i = 0; i < 3; i++) {
-          let index = i * 3 + (3 - i)
+        let win = true
+        for (let i = 1; i <= 3; i++) {
+          let index = i * 3 - i
           if (pattern[index] !== color) {
-            return false
+            win = false
           }
         }
-        return true
+        return win
       }
     }
 
@@ -125,13 +151,50 @@
           let tmp = clone(pattern)
           tmp[index] = color
           if (check(tmp, color)) {
-            return true
+            return index
           }
         }
       }
-      return false
+      return null
     }
 
-    show(pattern)
+    function bestChoice(pattern, color) {
+      let idx = null;
+      if (idx = willWin(pattern, color)) {
+        return {
+          index: idx,
+          result: 1
+        }
+      }
+
+      let result = -2;
+      outer: for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          let index = getIndex(i, j)
+          if (pattern[index]) {
+            // 已落子
+            continue
+          }
+
+          let tmp = clone(pattern)
+          tmp[index] = color
+          let r = bestChoice(tmp, 3 - color).result
+
+          if (-r >= result) {
+            result = -r
+            idx = index
+          }
+          if (result == 1) {
+            break outer
+          }
+        }
+      }
+      return {
+        index: idx,
+        result: idx != null ? result : 0
+      }
+    }
+
+    show()
   </script>
 </body>
