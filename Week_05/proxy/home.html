@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+<input id="r" type="range" min=0 max=255>
+<input id="g" type="range" min=0 max=255>
+<input id="b" type="range" min=0 max=255>
+<div id="color" class="color"></div>
+<script>
+  let callbacks = new Map();
+  let reactivities = new Map()
+
+  let usedReactivies = []
+
+  let object = {
+    r: 1,
+    g: 1,
+    b: 1,
+  }
+
+  let po = reactive(object)
+
+  effect(() => {
+    document.getElementById("r").value = po.r
+  })
+  effect(() => {
+    document.getElementById("g").value = po.g
+  })
+  effect(() => {
+    document.getElementById("b").value = po.b
+  })
+  document.getElementById("r").addEventListener("input", event => {
+    po.r = event.target.value
+  })
+  document.getElementById("g").addEventListener("input", event => {
+    po.g = event.target.value
+  })
+  document.getElementById("b").addEventListener("input", event => {
+    po.b = event.target.value
+  })
+  effect(() => {
+    document.getElementById("color").style.backgroundColor = `rgb(${po.r}, ${po.g}, ${po.b}`
+  })
+
+  function effect(callback) {
+    usedReactivies = []
+    callback()
+    console.log(usedReactivies)
+
+    for (let reactivity of usedReactivies) {
+      let obj = reactivity[0]
+      let prop = reactivity[1]
+      if (!callbacks.has(obj)) {
+        callbacks.set(obj, new Map())
+      }
+      let objMap = callbacks.get(obj)
+      if (!objMap.has(prop)) {
+        objMap.set(prop, [])
+      }
+      let propList = objMap.get(prop)
+      propList.push(callback)
+    }
+  }
+
+  function reactive(object) {
+    if (reactivities.has(object)) {
+      return reactivities.get(object)
+    }
+    let proxy = new Proxy(object, {
+      set(obj, prop, val) {
+        obj[prop] = val
+        let objMap = callbacks.get(obj)
+        if (objMap) {
+          let propList = objMap.get(prop)
+          if (propList) {
+            for (let callback of propList) {
+              callback()
+            }
+          }
+        }
+        return obj[prop]
+      },
+      get(obj, prop) {
+        usedReactivies.push([obj, prop])
+        if (typeof obj[prop] === "object") {
+          return reactive(obj[prop])
+        }
+        return obj[prop]
+      }
+    })
+
+    reactivities.set(object, proxy)
+
+    return proxy
+  }
+</script>
+
+<style>
+  .color {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+</style>
+
+</html>
