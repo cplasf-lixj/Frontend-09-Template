@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<script>
+  class Animal {
+    constructor(name = 'name') {
+      this.name = name
+      this.attackPower = 5;
+    }
+
+    attack() {
+      return this.attackPower;
+    }
+  }
+
+  class Dog extends Animal {
+    constructor(name = 'dog', attackVal = 10) {
+      super(name)
+      super.attackPower = attackVal;
+    }
+  }
+
+  class Human {
+    constructor(name = 'human') {
+      this.name = name;
+      this.hp = 100;
+    }
+
+    injured(value) {
+      this.hp -= value
+      console.log(this.name + ' 受到了 ' + value + '点的伤害，剩余生命值为' + this.hp)
+    }
+  }
+
+  let human = new Human("张三")
+  let dog = new Dog("疯狗", 30)
+  human.injured(dog.attack())
+
+</script>
+
+</html>
