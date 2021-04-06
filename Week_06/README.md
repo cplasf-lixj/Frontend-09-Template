@@ -216,21 +216,3 @@
 
 # Object-Prototype
 
-
-
-
-
-
-
-
-
-
-
-  <BracketsExpression>::="("<AdditiveExpression>")"|
-                        <AdditiveExpression>|
-  <MultiplicationExpression>::=<Number>|
-                              <MultiplicationExpression>"*"<Number>|
-                              <MultiplicationExpression>"/"<Number>|
-  <AdditiveExpression>::=<MultiplicationExpression>|
-                        <AdditiveExpression>"+"<MultiplicationExpression>|
-                        <AdditiveExpression>"-"<MultiplicationExpression>|
