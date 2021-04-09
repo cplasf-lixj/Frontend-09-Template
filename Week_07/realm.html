@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>JavaScrip引擎Realm对象</title>
+</head>
+
+<body>
+  <div id="mountNode"></div>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-3.7.1/dist/g6.min.js"></script>
+  <script>
+
+    var rootNodeId = "JSIntrinsicObjects"
+    var rootNodeName = "JS内置对象"
+    var nodes = [
+      "Object",
+      "Boolean",
+      "String",
+      "Number",
+      "Symbol",
+      "Date",
+      "RegExp",
+      "Promise",
+      "Proxy",
+      "Map",
+      "WeakMap",
+      "Set",
+      "WeakSet",
+      "Function",
+      "错误",
+      "数组",
+      "二进制操作"
+    ]
+
+    var childMap = new Map()
+    childMap.set("错误", [
+      "Error",
+      "EvalError",
+      "RangeError",
+      "ReferenceError",
+      "SyntaxError",
+      "TypeError",
+      "URIError",
+    ])
+    childMap.set("数组", [
+      "Array",
+      "Float32Array",
+      "Float64Array",
+      "Int8Array",
+      "Int16Array",
+      "Int32Array",
+      "UInt8Array",
+      "UInt16Array",
+      "UInt32Array",
+      "UInt8ClampedArray",
+    ])
+    childMap.set("二进制操作", [
+      "ArrayBuffer",
+      "SharedArrayBuffer",
+      "DataView",
+    ])
+
+    const jsonData = {
+      id: rootNodeId,
+      label: rootNodeName,
+      type: "rect",
+      children: []
+    }
+
+    const treeGraph = new G6.TreeGraph({
+      container: 'mountNode',
+      width: window.innerWidth,
+      height: window.innerHeight,
+      modes: {
+        default: [
+          {
+            type: 'collapse-expand',
+            onChange(item, collapsed) {
+              const icon = item.get('group').findByClassName('collapse-icon');
+              if (collapsed) {
+                icon.attr('symbol', EXPAND_ICON);
+              } else {
+                icon.attr('symbol', COLLAPSE_ICON);
+              }
+            },
+          },
+          'drag-canvas',
+          'zoom-canvas',
+        ],
+      },
+      nodeStyle: {
+        default: {
+          fill: "#40a9ff",
+          stroke: "#096dd9",
+        }
+      },
+      edgeStyle: {
+        default: {
+          stroke: '#A3B1BF'
+        }
+      },
+      layout: {
+        type: 'compactBox', // 设置布局算法为 compactBox
+        direction: 'LR',
+        nodeSep: 100, // 节点之间间距
+        rankSep: 200, // 每个层级之间的间距
+        getHGap: () => {
+          return 80
+        },
+      },
+    });
+
+    function loadJsonData() {
+      nodes.forEach((item) => {
+        let node = {
+          "id": item,
+          "label": item,
+          "type": "rect",
+        }
+        if (childMap.has(item)) {
+          let childs = childMap.get(item)
+          let children = []
+          childs.forEach((child) => {
+            children.push({
+              "id": child,
+              "label": child,
+              "type": "rect",
+            })
+          })
+          node.children = children
+        }
+        jsonData.children.push(node)
+      })
+    }
+
+    const main = async () => {
+      loadJsonData()
+
+      treeGraph.data(jsonData)
+      treeGraph.render();
+    };
+    main();
+  </script>
+</body>
+
+</html>
