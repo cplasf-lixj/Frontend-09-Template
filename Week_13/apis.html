@@ -1,0 +1,85 @@
+<script>
+  let names = Object.getOwnPropertyNames(window)
+  function filterOut(names, props) {
+    let set = new Set()
+    props.forEach(o => set.add(o))
+    return names.filter(e => !set.has(e))
+  }
+
+  // ECMA 262
+  {
+    let js = new Set()
+    let objects = ["globalThis", "console", "BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decedeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"]
+    names = filterOut(names, objects)
+  }
+
+  // Subclass of Node
+  names = names.filter(e => {
+    try {
+      return !(window[e].prototype instanceof Node)
+    } catch (err) {
+      return true
+    }
+  }).filter(e => e != "Node");
+
+  // events
+  names = names.filter(e => !e.match(/^on/))
+
+  // webkit private
+  names = names.filter(e => !e.match(/^webkit/))
+
+  // https://html.spec.whatwg.org/#window
+  {
+    let names = Object.getOwnPropertyNames(window)
+    let js = new Set()
+    let objects = ["BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decedeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"]
+    names = filterOut(names, objects)
+
+    names = names.filter(e => {
+      try {
+        return !(window[e].prototype instanceof Node)
+      } catch (err) {
+        return true
+      }
+    }).filter(e => e != "Node");
+
+    let windowprops = new Set()
+    objects = ["window", "self", "document", "name", "location", "history", "customElements", "locationbar", "menubar", "personalbar", "scrollbars", "scrollbars", "toolbar", "status", "close", "closed", "stop", "focus", "blur", "frames", "length", "top", "opener", "parent", "frameElement", "navigator", "originAgentCluster", "alert", "confirm", "prompt", "print", "postMessage"]
+    names = filterOut(names, objects)
+  }
+
+  // https://html.spec.whatwg.org
+  {
+    objects = ["ApplicationCache", "AudioTrack", "AudioTrackList", "BarProp", "BeforeUnloadEvent", "BroadcaseChannel", "CanvasGradient", "CanvasPattern", "CanvasRenderingContext2D", "CloseEvent"]
+    names = filterOut(names, objects)
+  }
+
+  // http://www.ecma-international.org/ecma-402/5.0/index.html#Title
+  names = names.filter(e => e != "Intl")
+
+  // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15
+  {
+    let objects = ["WebGLVertexArrayObject", "WebGLUniformLocation", "WebGLTransformFeedback", "WebGLTexture", "WebGLSync", "WebGLShaderPrecisionFormat", "WebGLShader", "WebGLSampler", "WebGLRenderingContext", "WebGLRenderbuffer", "WebGLQuery", "WebGLProgram", "WebGLFramebuffer", "WebGLContextEvent", "WebGLBuffer", "WebGLActiveInfo", "WebGL2RenderingContext"]
+    names = filterOut(names, objects)
+  }
+
+  // https://www.w3.org/TR/webaudio
+  {
+    let objects = ["AudioContext", "AudioNode", "AnalyserNode", "AudioBuffer", "AudioBufferSourceNode", "AudioDestinationNode", "AudioListener", "AudioWorklet", "EventHandler", "AudioContextState", "BiquadFilterNode", "ChannelMergerNode", "ChannelSplitterNode", "ConstantSourceNode", "ConvolverNode", "DelayNode", "DynamicsCompressorNode", "DynamicsCompressorNode", "GainNode", "OscillatorNode", "PannerNode", "PeriodicWave", "ScriptProcessorNode", "AudioWorkletNode", "StereoPannerNode", "WaveShaperNode", ""]
+    names = filterOut(names, objects)
+  }
+  // https://encoding.spec.whatwg.org/#dom-textencoder
+  {
+    let objects = ["TextDecoder", "TextEncoder", "TextDecoderStream", "TextEncoderStream"]
+    names = filterOut(names, objects)
+  }
+  // https://streams.spec.whatwg.org/#blqs-class
+  {
+    let objects = ["ReadableStream", "ReadableStreamDefaultReader", "ReadableStreamBYOBReader", "ReadableStreamGenericReader", "ReadableStreamDefaultController", "ReadableStreamBYOBRequest", "ReadableByteStreamController", "WritableStream", "WritableStreamDefaultWriter", "TransformStream"]
+    names = filterOut(names, objects)
+  }
+  // https://wicg.github.io/BackgroundSync/spec/#sync-manager-interface
+  names = filterOut(names, ["SyncManager"]);
+
+  console.log(names)
+</script>
