@@ -41,3 +41,17 @@ let tict = () => {
 }
 ````
 
+
+
+## 手势的基础知识
+
+<img src="/Users/lixiangju/Documents/LeeXJ/WebStudy/Frontend-09-Template/Week_15/gesture.png" style="zoom:100%;" />
+
+1、start 后无其他操作，则认为是一次点击事件tap；
+
+2、start后移动大于10px(Retina屏的值，一倍屏为5px，三倍屏为15px)后，则认为是缓慢移动事件pan；
+
+3、如果pan结束的时候速度大于一定的值，则认为是清扫的事件，flick或swipe;
+
+4、按下大于0.5s后，则是长按事件；
+
