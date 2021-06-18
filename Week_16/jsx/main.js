@@ -1,5 +1,6 @@
 import { Carousel } from "./carousel.js"
 import { Component, createElement } from "./framework.js"
+import { Button } from "./button.js"
 
 let pics = [
   "https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg",
@@ -8,5 +9,6 @@ let pics = [
   "https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg"
 ]
 
-let aaa = <Carousel src={pics} />
+// let aaa = <Carousel src={pics} onChange={event => console.log(event.detail.position)} onClick={event => console.log(event.detail.data)} />
+let aaa = <Button>会计法空间大烧烤架</Button>
 aaa.mountTo(document.body)
